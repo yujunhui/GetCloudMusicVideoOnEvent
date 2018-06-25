@@ -5,6 +5,8 @@ import json
 import binascii
 
 # 来源: https://blog.csdn.net/tzs_1041218129/article/details/52789153
+# 来源: https://github.com/darknessomi/musicbox/blob/master/NEMbox/encrypt.py
+# 根据上述两个网站, 对其做了一点点修改, 使其对我代码能生效
 
 __all__ = ['encrypt_data']
 
@@ -46,7 +48,7 @@ def encrypt_data(dict_data):
     params = aes(aes(text, NONCE), secret)
     encSecKey = rsa(secret, PUBKEY, MODULUS)
     data = {
-        "params": params.decode(),
+        "params": params,
         "encSecKey": encSecKey
     }
 

@@ -15,7 +15,7 @@ header = {
     'Content-Type': 'application/x-www-form-urlencoded',
     'Host': 'music.163.com',
     'Referer': 'http://music.163.com',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36',
 }
 
 event_url = 'http://music.163.com/#/user/event?id=343142613'
@@ -26,6 +26,7 @@ enent_mv_api_url = 'http://music.163.com/weapi/cloudvideo/playurl'
 
 driver = webdriver.PhantomJS(executable_path=r'E:\Study\phantomjs-2.1.1-windows\bin\phantomjs.exe')
 driver.get(event_url)
+# 等待3s, 期望页面能加载成功
 time.sleep(3)
 # 滚动到页底
 js = "document.getElementById('g_iframe').contentWindow.scrollTo(0,9999999)"
@@ -51,11 +52,16 @@ if len(event_mv_list):
     resp = sess.post(enent_mv_api_url, data=data, headers=header)
 
     if resp.status_code == 200:
+        # 保存视频url
         with open('tmp/mv_urls.txt', 'w') as f:
             for each in resp.json()['urls']:
                 f.write(each['url']+'\n')
+
+        # 保存json
         with open('tmp/resp_json.txt', 'w') as f:
                 f.write(resp.text)
+
+        # 把视频的信息和json一起保存
         with open('tmp/mv_info.csv', 'w', newline='') as f:
             writer = csv.DictWriter(f, ['name','like','time','id','url','size','validityTime','r'])
             writer.writeheader()
