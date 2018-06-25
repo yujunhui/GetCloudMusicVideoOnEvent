@@ -2,6 +2,7 @@ import requests
 import csv
 from selenium import webdriver
 import time
+import os
 
 from encrypt_api import encrypt_data
 
@@ -52,6 +53,9 @@ if len(event_mv_list):
     resp = sess.post(enent_mv_api_url, data=data, headers=header)
 
     if resp.status_code == 200:
+        # 新建tmp
+        if not os.path.exists('tmp'):
+            os.mkdir('tmp')
         # 保存视频url
         with open('tmp/mv_urls.txt', 'w') as f:
             for each in resp.json()['urls']:
