@@ -6,4 +6,4 @@ tmp/
 mv_info.csv
 resp_json.txt
 mv_urls.txt
-
+.idea/

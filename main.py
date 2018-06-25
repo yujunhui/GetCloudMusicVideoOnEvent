@@ -1,6 +1,7 @@
 import requests
 import csv
 from selenium import webdriver
+import time
 
 from encrypt_api import encrypt_data
 
@@ -25,10 +26,12 @@ enent_mv_api_url = 'http://music.163.com/weapi/cloudvideo/playurl'
 
 driver = webdriver.PhantomJS(executable_path=r'E:\Study\phantomjs-2.1.1-windows\bin\phantomjs.exe')
 driver.get(event_url)
+time.sleep(3)
 # 滚动到页底
 js = "document.getElementById('g_iframe').contentWindow.scrollTo(0,9999999)"
 driver.execute_script(js)
-driver.get_screenshot_as_file('test_screenshot.png')
+time.sleep(3)
+driver.get_screenshot_as_file('tmp/test_screenshot.png')
 driver.switch_to.frame('g_iframe')
 event_mv_list = [{'details': i.text, 'id': i.get_attribute('data-vid')}
                  for i in driver.find_elements_by_css_selector('div.info.f-pa') if i is not None]
@@ -48,12 +51,12 @@ if len(event_mv_list):
     resp = sess.post(enent_mv_api_url, data=data, headers=header)
 
     if resp.status_code == 200:
-        with open('mv_urls.txt', 'w') as f:
+        with open('tmp/mv_urls.txt', 'w') as f:
             for each in resp.json()['urls']:
                 f.write(each['url']+'\n')
-        with open('resp_json.txt', 'w') as f:
+        with open('tmp/resp_json.txt', 'w') as f:
                 f.write(resp.text)
-        with open('mv_info.csv', 'w', newline='') as f:
+        with open('tmp/mv_info.csv', 'w', newline='') as f:
             writer = csv.DictWriter(f, ['name','like','time','id','url','size','validityTime','r'])
             writer.writeheader()
             csv_dict_data = resp.json()['urls']
